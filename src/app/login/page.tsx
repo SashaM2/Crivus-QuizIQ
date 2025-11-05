@@ -28,18 +28,24 @@ export default function LoginPage() {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
-        setError(data.error || "Login failed");
+        const data = await res.json().catch(() => ({ error: "Erro ao conectar com o servidor" }));
+        setError(data.error || "Erro ao fazer login");
         setLoading(false);
         return;
       }
 
-      router.push("/dashboard");
-      router.refresh();
+      const data = await res.json();
+      if (data.success) {
+        router.push("/dashboard");
+        router.refresh();
+      } else {
+        setError(data.error || "Erro ao fazer login");
+        setLoading(false);
+      }
     } catch (err) {
-      setError("Network error");
+      console.error("Login error:", err);
+      setError("Erro de conexão. Verifique se o servidor está online.");
       setLoading(false);
     }
   };

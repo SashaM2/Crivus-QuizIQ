@@ -22,8 +22,12 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, user: result.user });
   } catch (error) {
+    console.error("Login API error:", error);
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: "Invalid input" }, { status: 400 });
+    }
+    if (error instanceof Error && error.message.includes("DATABASE_URL")) {
+      return NextResponse.json({ error: "Servidor não configurado corretamente" }, { status: 500 });
     }
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
