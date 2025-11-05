@@ -69,7 +69,11 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   const { pathname } = request.nextUrl;
 
   // Public routes
-  if (pathname.startsWith("/api/collect") || pathname.startsWith("/api/auth/login")) {
+  if (
+    pathname.startsWith("/api/collect") ||
+    pathname.startsWith("/api/auth/login") ||
+    pathname.startsWith("/api/health")
+  ) {
     return NextResponse.next();
   }
 

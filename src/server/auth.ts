@@ -132,26 +132,31 @@ export async function clearAuthCookie(): Promise<void> {
 }
 
 export async function checkLockout(email: string, ip: string): Promise<{ locked: boolean; remaining: number }> {
-  const windowStart = new Date(Date.now() - LOCKOUT_WINDOW);
+  try {
+    const windowStart = new Date(Date.now() - LOCKOUT_WINDOW);
 
-  const recentAttempts = await db
-    .select()
-    .from(authAttempts)
-    .where(
-      and(
-        eq(authAttempts.email, email),
-        gte(authAttempts.createdAt, windowStart),
-        eq(authAttempts.success, false)
-      )
-    );
+    const recentAttempts = await db
+      .select()
+      .from(authAttempts)
+      .where(
+        and(
+          eq(authAttempts.email, email),
+          gte(authAttempts.createdAt, windowStart),
+          eq(authAttempts.success, false)
+        )
+      );
 
-  if (recentAttempts.length >= LOCKOUT_ATTEMPTS) {
-    const oldest = recentAttempts[0].createdAt.getTime();
-    const remaining = Math.ceil((LOCKOUT_WINDOW - (Date.now() - oldest)) / 1000);
-    return { locked: true, remaining };
+    if (recentAttempts.length >= LOCKOUT_ATTEMPTS) {
+      const oldest = recentAttempts[0].createdAt.getTime();
+      const remaining = Math.ceil((LOCKOUT_WINDOW - (Date.now() - oldest)) / 1000);
+      return { locked: true, remaining };
+    }
+
+    return { locked: false, remaining: 0 };
+  } catch {
+    // Se não conseguir verificar lockout, permitir tentativa
+    return { locked: false, remaining: 0 };
   }
-
-  return { locked: false, remaining: 0 };
 }
 
 export async function recordAuthAttempt(

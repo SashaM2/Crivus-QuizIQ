@@ -22,15 +22,45 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
+      // Primeiro verificar se o servidor está respondendo
+      try {
+        const healthCheck = await fetch("/api/health", {
+          method: "GET",
+          cache: "no-store",
+        });
+        if (!healthCheck.ok) {
+          setError("Servidor não está respondendo corretamente");
+          setLoading(false);
+          return;
+        }
+      } catch (healthErr) {
+        setError("Não foi possível conectar ao servidor. Verifique se o servidor está online.");
+        setLoading(false);
+        return;
+      }
+
+      // Tentar fazer login
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
+        cache: "no-store",
       });
 
       if (!res.ok) {
-        const data = await res.json().catch(() => ({ error: "Erro ao conectar com o servidor" }));
-        setError(data.error || "Erro ao fazer login");
+        let errorMessage = "Erro ao fazer login";
+        try {
+          const data = await res.json();
+          errorMessage = data.error || errorMessage;
+        } catch {
+          // Se não conseguir parsear JSON, usar mensagem padrão
+          if (res.status === 500) {
+            errorMessage = "Erro interno do servidor. Verifique os logs.";
+          } else if (res.status === 401) {
+            errorMessage = "Email ou senha inválidos";
+          }
+        }
+        setError(errorMessage);
         setLoading(false);
         return;
       }
@@ -45,7 +75,7 @@ export default function LoginPage() {
       }
     } catch (err) {
       console.error("Login error:", err);
-      setError("Erro de conexão. Verifique se o servidor está online.");
+      setError("Erro de conexão. Verifique se o servidor está online e as variáveis de ambiente estão configuradas.");
       setLoading(false);
     }
   };
