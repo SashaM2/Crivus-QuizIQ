@@ -4,7 +4,8 @@ import { canAccessTracker } from "@/server/trackers";
 import { db } from "@/server/db";
 import { trackers } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
-import { extractOrigin, checkOriginAllowed } from "@/server/trackers";
+import { extractOrigin } from "@/server/trackers";
+import { checkOriginAllowed } from "@/server/policies";
 import { z } from "zod";
 
 const updateTrackerSchema = z.object({

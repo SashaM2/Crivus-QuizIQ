@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/server/db";
-import { trackers, events, leads } from "@/server/db/schema";
-import { eq, and } from "drizzle-orm";
+import { trackers, events, leads, type NewEvent, type NewLead } from "@/server/db/schema";
+import { eq } from "drizzle-orm";
 import { checkOriginAllowed } from "@/server/policies";
 import { checkCollectRateLimit } from "@/server/rateLimit";
 import { z } from "zod";
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Insert event
+    // Insert event (omit id as it's auto-generated)
     await db.insert(events).values({
       ts: validated.ts,
       ev: validated.ev,
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
       questionId: validated.question_id || null,
       answerId: validated.answer_id || null,
       extra: validated.extra || null,
-    });
+    } as Omit<NewEvent, "id"> as NewEvent);
 
     // Handle lead capture
     if (validated.ev === "lead_capture" && validated.extra?.lead) {
@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
         name: lead.name || null,
         phone: lead.phone || null,
         extra: lead,
-      });
+      } as Omit<NewLead, "id"> as NewLead);
     }
 
     return NextResponse.json({ success: true });

@@ -2,7 +2,7 @@ import argon2 from "argon2";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { db } from "./db";
-import { users, authAttempts } from "./db/schema";
+import { users, authAttempts, type NewAuthAttempt } from "./db/schema";
 import { eq, and, gte } from "drizzle-orm";
 import crypto from "crypto";
 
@@ -47,7 +47,22 @@ export async function createToken(payload: Omit<JWTPayload, "csrf">): Promise<st
 export async function verifyToken(token: string): Promise<JWTPayload | null> {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
-    return payload as JWTPayload;
+    
+    // Ensure payload includes all expected properties with correct types
+    if (
+      typeof payload.userId === "string" &&
+      typeof payload.email === "string" &&
+      (payload.role === "super_admin" || payload.role === "friend") &&
+      typeof payload.csrf === "string"
+    ) {
+      return {
+        userId: payload.userId,
+        email: payload.email,
+        role: payload.role,
+        csrf: payload.csrf,
+      };
+    }
+    return null;
   } catch {
     return null;
   }
@@ -112,7 +127,7 @@ export async function recordAuthAttempt(
     email,
     ip: ip as any,
     success,
-  });
+  } as Omit<NewAuthAttempt, "id"> as NewAuthAttempt);
 }
 
 export async function login(email: string, password: string, ip: string): Promise<{ success: boolean; user?: JWTPayload; error?: string }> {

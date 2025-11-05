@@ -142,4 +142,5 @@ export type Lead = typeof leads.$inferSelect;
 export type NewLead = typeof leads.$inferInsert;
 export type Policy = typeof policies.$inferSelect;
 export type AuthAttempt = typeof authAttempts.$inferSelect;
+export type NewAuthAttempt = typeof authAttempts.$inferInsert;
 

@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
       locale: validated.locale || "pt",
     });
 
-    return new NextResponse(pdf, {
+    return new NextResponse(new Uint8Array(pdf), {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="report-${validated.tracker_id}-${Date.now()}.pdf"`,

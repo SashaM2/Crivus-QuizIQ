@@ -56,14 +56,16 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const offset = (validated.page - 1) * validated.limit;
+    const page = validated.page || 1;
+    const limit = validated.limit || 50;
+    const offset = (page - 1) * limit;
 
     const leadsList = await db
       .select()
       .from(leads)
       .where(and(...conditions))
       .orderBy(desc(leads.createdAt))
-      .limit(validated.limit)
+      .limit(limit)
       .offset(offset);
 
     const total = await db
@@ -75,8 +77,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       leads: leadsList,
       pagination: {
-        page: validated.page,
-        limit: validated.limit,
+        page,
+        limit,
         total: total[0]?.count || 0,
       },
     });

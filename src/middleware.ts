@@ -2,7 +2,11 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || "default-secret-change-me");
+const JWT_SECRET = new TextEncoder().encode(
+  process.env.JWT_SECRET && process.env.JWT_SECRET !== "default-secret-change-me"
+    ? process.env.JWT_SECRET
+    : "default-secret-change-me"
+);
 
 interface JWTPayload {
   userId: string;
@@ -14,7 +18,22 @@ interface JWTPayload {
 async function verifyToken(token: string): Promise<JWTPayload | null> {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
-    return payload as JWTPayload;
+
+    // Ensure payload includes all expected properties with correct types
+    if (
+      typeof payload.userId === "string" &&
+      typeof payload.email === "string" &&
+      (payload.role === "super_admin" || payload.role === "friend") &&
+      typeof payload.csrf === "string"
+    ) {
+      return {
+        userId: payload.userId,
+        email: payload.email,
+        role: payload.role,
+        csrf: payload.csrf,
+      };
+    }
+    return null;
   } catch {
     return null;
   }

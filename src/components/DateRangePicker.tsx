@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { format, subDays, startOfMonth, startOfYear } from "date-fns";
-import { ptBR, enUS, frFR, esES } from "date-fns/locale";
+import { ptBR, enUS, fr, es } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "lucide-react";
 
-const locales = { pt: ptBR, en: enUS, fr: frFR, es: esES };
+const locales = { pt: ptBR, en: enUS, fr: fr, es: es };
 const locale = ptBR;
 
 interface DateRangePickerProps {
