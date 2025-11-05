@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import TrackerSelect from "@/components/TrackerSelect";
@@ -24,13 +24,7 @@ export default function UTMPage() {
   const [utmStats, setUtmStats] = useState<UTMStat[]>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (trackerId) {
-      fetchUTMStats();
-    }
-  }, [trackerId, from, to]);
-
-  const fetchUTMStats = async () => {
+  const fetchUTMStats = useCallback(async () => {
     if (!trackerId) return;
     setLoading(true);
     try {
@@ -48,7 +42,13 @@ export default function UTMPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [trackerId, from, to]);
+
+  useEffect(() => {
+    if (trackerId) {
+      fetchUTMStats();
+    }
+  }, [trackerId, fetchUTMStats]);
 
   return (
     <Layout>

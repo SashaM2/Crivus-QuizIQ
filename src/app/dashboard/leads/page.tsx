@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import TrackerSelect from "@/components/TrackerSelect";
@@ -28,13 +28,7 @@ export default function LeadsPage() {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
 
-  useEffect(() => {
-    if (trackerId) {
-      fetchLeads();
-    }
-  }, [trackerId, from, to, search, page]);
-
-  const fetchLeads = async () => {
+  const fetchLeads = useCallback(async () => {
     if (!trackerId) return;
     setLoading(true);
     try {
@@ -58,7 +52,13 @@ export default function LeadsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [trackerId, from, to, search, page]);
+
+  useEffect(() => {
+    if (trackerId) {
+      fetchLeads();
+    }
+  }, [trackerId, fetchLeads]);
 
   const handleExport = async () => {
     if (!trackerId) return;

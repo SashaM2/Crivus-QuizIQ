@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import KpiCard from "@/components/KpiCard";
@@ -19,13 +19,7 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (trackerId) {
-      fetchStats();
-    }
-  }, [trackerId, from, to, groupBy]);
-
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     if (!trackerId) return;
     setLoading(true);
     try {
@@ -46,7 +40,13 @@ export default function DashboardPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [trackerId, from, to, groupBy]);
+
+  useEffect(() => {
+    if (trackerId) {
+      fetchStats();
+    }
+  }, [trackerId, fetchStats]);
 
   const handleExport = async (format: "pdf" | "txt") => {
     if (!trackerId) return;

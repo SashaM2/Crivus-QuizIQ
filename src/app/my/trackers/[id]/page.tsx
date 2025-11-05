@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,9 +16,25 @@ export default function TrackerDetailPage() {
   const [snippet, setSnippet] = useState("");
   const [copied, setCopied] = useState(false);
 
+  const fetchTracker = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/trackers/${trackerId}`);
+      if (res.ok) {
+        const data = await res.json();
+        setTracker(data);
+      } else {
+        router.push("/my/trackers");
+      }
+    } catch {
+      router.push("/my/trackers");
+    } finally {
+      setLoading(false);
+    }
+  }, [trackerId, router]);
+
   useEffect(() => {
     fetchTracker();
-  }, [trackerId]);
+  }, [fetchTracker]);
 
   useEffect(() => {
     if (tracker) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 
@@ -19,11 +19,7 @@ export default function TrackerSelect({ value, onChange }: TrackerSelectProps) {
   const [trackers, setTrackers] = useState<Tracker[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchTrackers();
-  }, []);
-
-  const fetchTrackers = async () => {
+  const fetchTrackers = useCallback(async () => {
     try {
       const res = await fetch("/api/trackers");
       if (res.ok) {
@@ -38,7 +34,11 @@ export default function TrackerSelect({ value, onChange }: TrackerSelectProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [value, onChange]);
+
+  useEffect(() => {
+    fetchTrackers();
+  }, [fetchTrackers]);
 
   if (loading) {
     return (

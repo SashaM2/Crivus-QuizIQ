@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import TrackerSelect from "@/components/TrackerSelect";
@@ -20,13 +20,7 @@ export default function TopPagesPage() {
   const [topPages, setTopPages] = useState<TopPage[]>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (trackerId) {
-      fetchTopPages();
-    }
-  }, [trackerId, from, to]);
-
-  const fetchTopPages = async () => {
+  const fetchTopPages = useCallback(async () => {
     if (!trackerId) return;
     setLoading(true);
     try {
@@ -44,7 +38,13 @@ export default function TopPagesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [trackerId, from, to]);
+
+  useEffect(() => {
+    if (trackerId) {
+      fetchTopPages();
+    }
+  }, [trackerId, fetchTopPages]);
 
   return (
     <Layout>

@@ -10,11 +10,22 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "./schema";
 
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL is not set");
+function getDatabaseUrl(): string {
+  const url = process.env.DATABASE_URL;
+  if (!url) {
+    // Durante o build do Next.js, usar uma URL placeholder temporária
+    // Isso permite que o build complete sem erro
+    // No Render, DATABASE_URL deve estar disponível durante o build
+    const isBuildTime = process.env.NEXT_PHASE?.includes("build");
+    if (isBuildTime) {
+      return "postgresql://placeholder:placeholder@localhost:5432/placeholder";
+    }
+    throw new Error("DATABASE_URL is not set");
+  }
+  return url;
 }
 
-const client = postgres(process.env.DATABASE_URL, {
+const client = postgres(getDatabaseUrl(), {
   max: 10,
 });
 

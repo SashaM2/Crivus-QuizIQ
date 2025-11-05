@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import TrackerSelect from "@/components/TrackerSelect";
@@ -27,13 +27,7 @@ export default function DropoffPage() {
   const [dropoff, setDropoff] = useState<DropoffPoint[]>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (trackerId) {
-      fetchDropoff();
-    }
-  }, [trackerId, quizId, from, to, groupBy]);
-
-  const fetchDropoff = async () => {
+  const fetchDropoff = useCallback(async () => {
     if (!trackerId) return;
     setLoading(true);
     try {
@@ -55,7 +49,13 @@ export default function DropoffPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [trackerId, quizId, from, to, groupBy]);
+
+  useEffect(() => {
+    if (trackerId) {
+      fetchDropoff();
+    }
+  }, [trackerId, fetchDropoff]);
 
   const chartData = dropoff.map((d) => ({
     date: d.date,
