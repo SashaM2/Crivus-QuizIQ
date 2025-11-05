@@ -74,23 +74,6 @@ export default function TrackerDetailPage() {
     }
   }, [tracker]);
 
-  const fetchTracker = async () => {
-    try {
-      const res = await fetch(`/api/trackers/${trackerId}`);
-      if (res.ok) {
-        const data = await res.json();
-        setTracker(data);
-      } else {
-        router.push("/my/trackers");
-      }
-    } catch (err) {
-      console.error("Failed to fetch tracker:", err);
-      router.push("/my/trackers");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleCopySnippet = async () => {
     await navigator.clipboard.writeText(snippet);
     setCopied(true);
