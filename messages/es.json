@@ -1,0 +1,85 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "back": "Volver",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "export": "Exportar",
+    "copy": "Copiar",
+    "copied": "¡Copiado!"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "email": "Email",
+    "password": "Contraseña",
+    "loginButton": "Iniciar sesión",
+    "invalidCredentials": "Email o contraseña inválidos",
+    "accountLocked": "Cuenta bloqueada. Intente nuevamente en {minutes} minutos."
+  },
+  "dashboard": {
+    "title": "Panel",
+    "overview": "Resumen",
+    "topPages": "Páginas más visitadas",
+    "dropoff": "Abandono",
+    "utm": "Estadísticas UTM",
+    "leads": "Leads",
+    "events": "Eventos",
+    "visits": "Visitas",
+    "starts": "Inicios",
+    "completes": "Completados",
+    "completionRate": "Tasa de finalización",
+    "leadsCount": "Leads",
+    "leadRate": "Tasa de leads"
+  },
+  "trackers": {
+    "title": "Mis Trackers",
+    "create": "Crear Tracker",
+    "name": "Nombre",
+    "siteUrl": "URL del sitio",
+    "trackerId": "ID del Tracker",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "origins": "Orígenes permitidos",
+    "snippet": "Snippet",
+    "copySnippet": "Copiar Snippet",
+    "share": "Compartir",
+    "pause": "Pausar",
+    "activate": "Activar",
+    "delete": "Eliminar",
+    "quotaExceeded": "Cuota excedida. Máximo: {max} trackers."
+  },
+  "admin": {
+    "title": "Administración",
+    "users": "Usuarios",
+    "policies": "Políticas",
+    "audit": "Auditoría",
+    "moderation": "Moderación",
+    "maxTrackersPerUser": "Máx. Trackers por usuario",
+    "maxCollectRpsPerOrigin": "Máx. RPS por origen",
+    "retentionDays": "Días de retención",
+    "allowedOrigins": "Orígenes permitidos"
+  },
+  "export": {
+    "title": "Exportar informe",
+    "format": "Formato",
+    "pdf": "PDF",
+    "txt": "TXT",
+    "sections": "Secciones",
+    "period": "Período",
+    "granularity": "Granularidad",
+    "day": "Día",
+    "month": "Mes",
+    "year": "Año"
+  }
+}
+

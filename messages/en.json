@@ -1,0 +1,85 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "copy": "Copy",
+    "copied": "Copied!"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "loginButton": "Sign In",
+    "invalidCredentials": "Invalid email or password",
+    "accountLocked": "Account locked. Try again in {minutes} minutes."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "overview": "Overview",
+    "topPages": "Top Pages",
+    "dropoff": "Drop-off",
+    "utm": "UTM Stats",
+    "leads": "Leads",
+    "events": "Events",
+    "visits": "Visits",
+    "starts": "Starts",
+    "completes": "Completes",
+    "completionRate": "Completion Rate",
+    "leadsCount": "Leads",
+    "leadRate": "Lead Rate"
+  },
+  "trackers": {
+    "title": "My Trackers",
+    "create": "Create Tracker",
+    "name": "Name",
+    "siteUrl": "Site URL",
+    "trackerId": "Tracker ID",
+    "active": "Active",
+    "inactive": "Inactive",
+    "origins": "Allowed Origins",
+    "snippet": "Snippet",
+    "copySnippet": "Copy Snippet",
+    "share": "Share",
+    "pause": "Pause",
+    "activate": "Activate",
+    "delete": "Delete",
+    "quotaExceeded": "Quota exceeded. Max: {max} trackers."
+  },
+  "admin": {
+    "title": "Administration",
+    "users": "Users",
+    "policies": "Policies",
+    "audit": "Audit",
+    "moderation": "Moderation",
+    "maxTrackersPerUser": "Max Trackers per User",
+    "maxCollectRpsPerOrigin": "Max RPS per Origin",
+    "retentionDays": "Retention Days",
+    "allowedOrigins": "Allowed Origins"
+  },
+  "export": {
+    "title": "Export Report",
+    "format": "Format",
+    "pdf": "PDF",
+    "txt": "TXT",
+    "sections": "Sections",
+    "period": "Period",
+    "granularity": "Granularity",
+    "day": "Day",
+    "month": "Month",
+    "year": "Year"
+  }
+}
+

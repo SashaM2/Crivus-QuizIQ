@@ -1,0 +1,85 @@
+{
+  "common": {
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "create": "Criar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "previous": "Anterior",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "export": "Exportar",
+    "copy": "Copiar",
+    "copied": "Copiado!"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Senha",
+    "loginButton": "Entrar",
+    "invalidCredentials": "Email ou senha inválidos",
+    "accountLocked": "Conta bloqueada. Tente novamente em {minutes} minutos."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "overview": "Visão Geral",
+    "topPages": "Páginas Mais Visitadas",
+    "dropoff": "Abandono",
+    "utm": "UTM Stats",
+    "leads": "Leads",
+    "events": "Eventos",
+    "visits": "Visitas",
+    "starts": "Inícios",
+    "completes": "Completos",
+    "completionRate": "Taxa de Conclusão",
+    "leadsCount": "Leads",
+    "leadRate": "Taxa de Leads"
+  },
+  "trackers": {
+    "title": "Meus Trackers",
+    "create": "Criar Tracker",
+    "name": "Nome",
+    "siteUrl": "URL do Site",
+    "trackerId": "Tracker ID",
+    "active": "Ativo",
+    "inactive": "Inativo",
+    "origins": "Origens Permitidas",
+    "snippet": "Snippet",
+    "copySnippet": "Copiar Snippet",
+    "share": "Compartilhar",
+    "pause": "Pausar",
+    "activate": "Ativar",
+    "delete": "Excluir",
+    "quotaExceeded": "Cota excedida. Máximo: {max} trackers."
+  },
+  "admin": {
+    "title": "Administração",
+    "users": "Usuários",
+    "policies": "Políticas",
+    "audit": "Auditoria",
+    "moderation": "Moderação",
+    "maxTrackersPerUser": "Máx. Trackers por Usuário",
+    "maxCollectRpsPerOrigin": "Máx. RPS por Origem",
+    "retentionDays": "Dias de Retenção",
+    "allowedOrigins": "Origens Permitidas"
+  },
+  "export": {
+    "title": "Exportar Relatório",
+    "format": "Formato",
+    "pdf": "PDF",
+    "txt": "TXT",
+    "sections": "Seções",
+    "period": "Período",
+    "granularity": "Granularidade",
+    "day": "Dia",
+    "month": "Mês",
+    "year": "Ano"
+  }
+}
+
