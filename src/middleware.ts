@@ -2,11 +2,25 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET && process.env.JWT_SECRET !== "default-secret-change-me"
-    ? process.env.JWT_SECRET
-    : "default-secret-change-me"
-);
+function getJwtSecret(): Uint8Array {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("JWT_SECRET is required in production");
+    }
+    console.warn("⚠️  JWT_SECRET not set, using default (UNSAFE FOR PRODUCTION)");
+    return new TextEncoder().encode("default-secret-change-me");
+  }
+  if (secret === "default-secret-change-me") {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("JWT_SECRET cannot be 'default-secret-change-me' in production");
+    }
+    console.warn("⚠️  Using default JWT_SECRET (UNSAFE FOR PRODUCTION)");
+  }
+  return new TextEncoder().encode(secret);
+}
+
+const JWT_SECRET = getJwtSecret();
 
 interface JWTPayload {
   userId: string;

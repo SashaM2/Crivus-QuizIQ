@@ -6,8 +6,32 @@ import { users, authAttempts, type NewAuthAttempt } from "./db/schema";
 import { eq, and, gte } from "drizzle-orm";
 import crypto from "crypto";
 
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || "default-secret-change-me");
-const INVITE_SECRET = process.env.INVITE_SECRET || "default-invite-secret-change-me";
+function getJwtSecret(): Uint8Array {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("JWT_SECRET is required in production");
+    }
+    console.warn("⚠️  JWT_SECRET not set, using default (UNSAFE FOR PRODUCTION)");
+    return new TextEncoder().encode("default-secret-change-me");
+  }
+  return new TextEncoder().encode(secret);
+}
+
+function getInviteSecret(): string {
+  const secret = process.env.INVITE_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("INVITE_SECRET is required in production");
+    }
+    console.warn("⚠️  INVITE_SECRET not set, using default (UNSAFE FOR PRODUCTION)");
+    return "default-invite-secret-change-me";
+  }
+  return secret;
+}
+
+const JWT_SECRET = getJwtSecret();
+const INVITE_SECRET = getInviteSecret();
 const LOCKOUT_ATTEMPTS = 5;
 const LOCKOUT_WINDOW = 15 * 60 * 1000; // 15 minutes
 const JWT_EXPIRES_IN = "2h";

@@ -15,10 +15,13 @@ function getDatabaseUrl(): string {
   if (!url) {
     // Durante o build do Next.js, usar uma URL placeholder temporária
     // Isso permite que o build complete sem erro
-    // No Render, DATABASE_URL deve estar disponível durante o build
     const isBuildTime = process.env.NEXT_PHASE?.includes("build");
     if (isBuildTime) {
       return "postgresql://placeholder:placeholder@localhost:5432/placeholder";
+    }
+    // Em produção, DATABASE_URL é obrigatório
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("DATABASE_URL is required in production");
     }
     throw new Error("DATABASE_URL is not set");
   }
