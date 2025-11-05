@@ -9,7 +9,13 @@ import crypto from "crypto";
 function getJwtSecret(): Uint8Array {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
-    if (process.env.NODE_ENV === "production") {
+    // Durante o build, permitir placeholder
+    const isBuildTime = process.env.NEXT_PHASE?.includes("build");
+    if (isBuildTime) {
+      return new TextEncoder().encode("placeholder-for-build");
+    }
+    // Em runtime de produção, exigir
+    if (process.env.NODE_ENV === "production" && !isBuildTime) {
       throw new Error("JWT_SECRET is required in production");
     }
     console.warn("⚠️  JWT_SECRET not set, using default (UNSAFE FOR PRODUCTION)");
@@ -21,7 +27,13 @@ function getJwtSecret(): Uint8Array {
 function getInviteSecret(): string {
   const secret = process.env.INVITE_SECRET;
   if (!secret) {
-    if (process.env.NODE_ENV === "production") {
+    // Durante o build, permitir placeholder
+    const isBuildTime = process.env.NEXT_PHASE?.includes("build");
+    if (isBuildTime) {
+      return "placeholder-for-build";
+    }
+    // Em runtime de produção, exigir
+    if (process.env.NODE_ENV === "production" && !isBuildTime) {
       throw new Error("INVITE_SECRET is required in production");
     }
     console.warn("⚠️  INVITE_SECRET not set, using default (UNSAFE FOR PRODUCTION)");

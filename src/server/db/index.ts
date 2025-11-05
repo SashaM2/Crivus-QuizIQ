@@ -19,8 +19,8 @@ function getDatabaseUrl(): string {
     if (isBuildTime) {
       return "postgresql://placeholder:placeholder@localhost:5432/placeholder";
     }
-    // Em produção, DATABASE_URL é obrigatório
-    if (process.env.NODE_ENV === "production") {
+    // Em runtime de produção, DATABASE_URL é obrigatório
+    if (process.env.NODE_ENV === "production" && !isBuildTime) {
       throw new Error("DATABASE_URL is required in production");
     }
     throw new Error("DATABASE_URL is not set");

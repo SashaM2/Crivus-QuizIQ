@@ -5,15 +5,27 @@ import { jwtVerify } from "jose";
 function getJwtSecret(): Uint8Array {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
-    if (process.env.NODE_ENV === "production") {
+    // Durante o build, permitir placeholder
+    const isBuildTime = process.env.NEXT_PHASE?.includes("build");
+    if (isBuildTime) {
+      return new TextEncoder().encode("placeholder-for-build");
+    }
+    // Em runtime de produção, exigir
+    if (process.env.NODE_ENV === "production" && !isBuildTime) {
       throw new Error("JWT_SECRET is required in production");
     }
     console.warn("⚠️  JWT_SECRET not set, using default (UNSAFE FOR PRODUCTION)");
     return new TextEncoder().encode("default-secret-change-me");
   }
-  if (secret === "default-secret-change-me") {
+  if (secret === "default-secret-change-me" || secret === "placeholder-for-build") {
+    // Durante o build, permitir
+    const isBuildTime = process.env.NEXT_PHASE?.includes("build");
+    if (isBuildTime) {
+      return new TextEncoder().encode(secret);
+    }
+    // Em runtime de produção, não permitir valores placeholder
     if (process.env.NODE_ENV === "production") {
-      throw new Error("JWT_SECRET cannot be 'default-secret-change-me' in production");
+      throw new Error("JWT_SECRET cannot be placeholder in production");
     }
     console.warn("⚠️  Using default JWT_SECRET (UNSAFE FOR PRODUCTION)");
   }
