@@ -166,7 +166,7 @@ export async function recordAuthAttempt(
   } as Omit<NewAuthAttempt, "id"> as NewAuthAttempt);
 }
 
-export async function login(email: string, password: string, ip: string): Promise<{ success: boolean; user?: JWTPayload; error?: string }> {
+export async function login(email: string, password: string, ip: string): Promise<{ success: boolean; user?: JWTPayload; token?: string; error?: string }> {
   try {
     const lockout = await checkLockout(email, ip).catch(() => ({ locked: false, remaining: 0 }));
     if (lockout.locked) {
@@ -204,9 +204,8 @@ export async function login(email: string, password: string, ip: string): Promis
     };
 
     const token = await createToken(payload);
-    await setAuthCookie(token);
 
-    return { success: true, user: { ...payload, csrf: "" } };
+    return { success: true, user: { ...payload, csrf: "" }, token };
   } catch (error) {
     console.error("Login error:", error);
     if (error instanceof Error) {

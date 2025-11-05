@@ -20,7 +20,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: result.error }, { status: 401 });
     }
 
-    return NextResponse.json({ success: true, user: result.user });
+    if (!result.token) {
+      return NextResponse.json({ error: "Erro ao gerar token" }, { status: 500 });
+    }
+
+    // Configurar cookie na resposta
+    const response = NextResponse.json({ success: true, user: result.user });
+    response.cookies.set("auth-token", result.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 2, // 2 hours
+      path: "/",
+    });
+
+    return response;
   } catch (error) {
     console.error("Login API error:", error);
     if (error instanceof z.ZodError) {
