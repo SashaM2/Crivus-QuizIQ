@@ -167,44 +167,55 @@ export async function recordAuthAttempt(
 }
 
 export async function login(email: string, password: string, ip: string): Promise<{ success: boolean; user?: JWTPayload; error?: string }> {
-  const lockout = await checkLockout(email, ip);
-  if (lockout.locked) {
-    await recordAuthAttempt(email, ip, false);
-    return {
-      success: false,
-      error: `Account locked. Try again in ${Math.ceil(lockout.remaining / 60)} minutes.`,
+  try {
+    const lockout = await checkLockout(email, ip).catch(() => ({ locked: false, remaining: 0 }));
+    if (lockout.locked) {
+      await recordAuthAttempt(email, ip, false).catch(() => {});
+      return {
+        success: false,
+        error: `Account locked. Try again in ${Math.ceil(lockout.remaining / 60)} minutes.`,
+      };
+    }
+
+    const user = await db.select().from(users).where(eq(users.email, email)).limit(1);
+
+    if (!user.length) {
+      await recordAuthAttempt(email, ip, false).catch(() => {});
+      return { success: false, error: "Invalid email or password" };
+    }
+
+    const isValid = await verifyPassword(user[0].passHash, password);
+    if (!isValid) {
+      await recordAuthAttempt(email, ip, false).catch(() => {});
+      return { success: false, error: "Invalid email or password" };
+    }
+
+    await recordAuthAttempt(email, ip, true).catch(() => {});
+    await db
+      .update(users)
+      .set({ lastLoginAt: new Date() })
+      .where(eq(users.id, user[0].id))
+      .catch(() => {});
+
+    const payload: Omit<JWTPayload, "csrf"> = {
+      userId: user[0].id,
+      email: user[0].email,
+      role: user[0].role as "super_admin" | "friend",
     };
+
+    const token = await createToken(payload);
+    await setAuthCookie(token);
+
+    return { success: true, user: { ...payload, csrf: "" } };
+  } catch (error) {
+    console.error("Login error:", error);
+    if (error instanceof Error) {
+      if (error.message.includes("DATABASE_URL") || error.message.includes("connection")) {
+        return { success: false, error: "Erro de conexão com o banco de dados" };
+      }
+    }
+    return { success: false, error: "Erro interno do servidor" };
   }
-
-  const user = await db.select().from(users).where(eq(users.email, email)).limit(1);
-
-  if (!user.length) {
-    await recordAuthAttempt(email, ip, false);
-    return { success: false, error: "Invalid email or password" };
-  }
-
-  const isValid = await verifyPassword(user[0].passHash, password);
-  if (!isValid) {
-    await recordAuthAttempt(email, ip, false);
-    return { success: false, error: "Invalid email or password" };
-  }
-
-  await recordAuthAttempt(email, ip, true);
-  await db
-    .update(users)
-    .set({ lastLoginAt: new Date() })
-    .where(eq(users.id, user[0].id));
-
-  const payload: Omit<JWTPayload, "csrf"> = {
-    userId: user[0].id,
-    email: user[0].email,
-    role: user[0].role as "super_admin" | "friend",
-  };
-
-  const token = await createToken(payload);
-  await setAuthCookie(token);
-
-  return { success: true, user: { ...payload, csrf: "" } };
 }
 
 export function generateInviteCode(): string {

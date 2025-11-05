@@ -24,12 +24,17 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Login API error:", error);
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: "Invalid input" }, { status: 400 });
+      return NextResponse.json({ error: "Dados inválidos" }, { status: 400 });
     }
-    if (error instanceof Error && error.message.includes("DATABASE_URL")) {
-      return NextResponse.json({ error: "Servidor não configurado corretamente" }, { status: 500 });
+    if (error instanceof Error) {
+      if (error.message.includes("DATABASE_URL") || error.message.includes("connection")) {
+        return NextResponse.json({ error: "Servidor não configurado. Verifique DATABASE_URL." }, { status: 500 });
+      }
+      if (error.message.includes("JWT_SECRET")) {
+        return NextResponse.json({ error: "Servidor não configurado. Verifique JWT_SECRET." }, { status: 500 });
+      }
     }
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Erro interno do servidor" }, { status: 500 });
   }
 }
 
